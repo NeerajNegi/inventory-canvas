@@ -33,7 +33,11 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/fabric/dist/fabric.min.js",
+              "node_modules/easyannotation/dist/easyannotation.min.js",
+              "node_modules/@recogito/annotorious/dist/annotorious.min.js"
+            ]
           },
           "configurations": {
             "production": {
