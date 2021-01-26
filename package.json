@@ -19,8 +19,6 @@
     "@angular/platform-browser": "~11.0.9",
     "@angular/platform-browser-dynamic": "~11.0.9",
     "@angular/router": "~11.0.9",
-    "@recogito/annotorious": "^2.2.0",
-    "easyannotation": "^1.0.8",
     "fabric": "^4.3.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
