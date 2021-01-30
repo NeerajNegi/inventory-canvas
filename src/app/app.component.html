@@ -1,15 +1,10 @@
-<button (click)="onClear()">Clear</button>
-<button (click)="addBox()">Add Box</button>
-<button (click)="save()">Save</button>
-<button (click)="removeElement()">Remove</button>
-<button (click)="search()">Search</button>
-<button (click)="loadCanvas()">Load</button>
 <div class="image-container">
+  <button (click)="onClear()">Clear</button>
+  <button (click)="openAddBoxDialog()">Add Box</button>
+  <button (click)="save()">Save</button>
+  <button (click)="removeElement()">Remove</button>
+  <button (click)="openSearchBoxDialog()">Search</button>
+  <button (click)="loadCanvas()">Load</button>
+  <!-- Canvas -->
   <canvas id="canvas" class="canvas" width="1000" height="1000"></canvas>
-  <!-- <img 
-    crossorigin="anonymous"
-    id="floor-plan"
-    src="https://images.unsplash.com/photo-1523834347582-1a5b9ef3419b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1268&q=80" 
-    alt=""
-  > -->
 </div>

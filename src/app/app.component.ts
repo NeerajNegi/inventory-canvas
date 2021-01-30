@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core'
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { CreateBoxDialogComponent } from './create-box-dialog/create-box-dialog.component';
+import { GenerateSmallBoxDialogComponent } from './generate-small-box-dialog/generate-small-box-dialog.component';
+
 import fabric from './models/Box'
 
 const RECT_STROKE_WIDTH = 5
@@ -12,6 +16,8 @@ const RECT_FILL_COLOR = 'rgba(0,0,0,0)'
 export class AppComponent implements OnInit {
   canvas: any
   oldCanvas: any
+
+  constructor(public dialog: MatDialog) {}
 
   ngOnInit() {
     this.canvas = new fabric.Canvas('canvas', { selection: false })
@@ -28,37 +34,76 @@ export class AppComponent implements OnInit {
     elements.length > 1 && this.canvas.remove(...elements.slice(1))
   }
 
-  public addBox(name = 'box 1') {
+  public openAddBoxDialog() {
+
+    const dialogRef = this.dialog.open(CreateBoxDialogComponent, {
+      width: '300px',
+      data: {title: 'Create'}
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      result && this.addBox(result)
+    })
+  }
+
+  public openSearchBoxDialog() {
+
+    const dialogRef = this.dialog.open(CreateBoxDialogComponent, {
+      width: '300px',
+      data: {title: 'Search'}
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      result && this.search(result)
+    })
+  }
+
+  private addBox(name: string) {
     const box = this.createBox({ top: 100, left: 100, name})
     this.canvas.add(box)
     this.canvas.renderAll()
 
     box.on('mousedblclick', () => {
-      const coords = box.getCoords()
-      const width = coords[1].x - coords[0].x - RECT_STROKE_WIDTH
-      const height = coords[3].y - coords[0].y - RECT_STROKE_WIDTH
-      const { x: left, y: top} = coords[0]
-      const n = 10
-      const horizontalSegment = height / n
-      for (let i = 0; i < n; i++) {
-        this.canvas.add(this.createBox({
-          width,
-          height: horizontalSegment,
-          left,
-          top: i * horizontalSegment + top,
-          strokeWidth: 2
-        }))
-      }
-      this.canvas.renderAll()
+
+      const dialogRef = this.dialog.open(GenerateSmallBoxDialogComponent, {
+        width: '300px'
+      })
+  
+      dialogRef.afterClosed().subscribe(result => {
+        result && this.generateMultiplesBoxes(box, result)
+      })
     })
   }
 
-  public search() {
-    console.log(this.canvas.getItemsByName('box 1'))
+  private generateMultiplesBoxes(object: any, boxCount: number) {
+    const coords = object.getCoords()
+    const width = coords[1].x - coords[0].x - RECT_STROKE_WIDTH
+    const height = coords[3].y - coords[0].y - RECT_STROKE_WIDTH
+    const { x: left, y: top} = coords[0]
+    const horizontalSegment = height / boxCount
+    for (let i = 0; i < boxCount; i++) {
+      this.canvas.add(this.createBox({
+        width,
+        height: horizontalSegment,
+        left,
+        top: i * horizontalSegment + top,
+        strokeWidth: 2
+      }))
+    }
+    this.canvas.renderAll()
+  }
+
+  private search(name: string) {
+    this.canvas.setActiveObject(this.canvas.getBoxByName(name))
+    this.canvas.renderAll()
   }
 
   public loadCanvas() {
-    this.canvas.loadFromJSON(this.oldCanvas, this.canvas.renderAll.bind(this.canvas))
+    this.canvas.loadFromJSON(this.oldCanvas, this.canvas.renderAll.bind(this.canvas), (o: any, object: any) => {
+      if (object.type === 'image') {
+        object.set('selectable', false)
+      }
+    })
   }
 
   public save() {
@@ -88,6 +133,10 @@ export class AppComponent implements OnInit {
       stroke,
       strokeWidth,
       strokeUniform: true,
+      cornerStyle: 'circle',
+      borderColor: 'red',
+      cornerSize: 12,
+      cornerColor: 'red',
     }, {
       name
     })

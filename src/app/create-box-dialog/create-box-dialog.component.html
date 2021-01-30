@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>{{data.title}} Box</h1>
+<div mat-dialog-content>
+    <label>Name</label>
+    <input matInput [(ngModel)]="boxName" />
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button (click)="create()">{{data.title}}</button>
+</div>
