@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-declare const fabric: any
+import fabric from './models/Box'
 
 const RECT_STROKE_WIDTH = 5
 const RECT_STROKE_COLOR = 'black'
@@ -11,6 +11,7 @@ const RECT_FILL_COLOR = 'rgba(0,0,0,0)'
 })
 export class AppComponent implements OnInit {
   canvas: any
+  oldCanvas: any
 
   ngOnInit() {
     this.canvas = new fabric.Canvas('canvas', { selection: false })
@@ -27,8 +28,8 @@ export class AppComponent implements OnInit {
     elements.length > 1 && this.canvas.remove(...elements.slice(1))
   }
 
-  public addBox() {
-    const box = this.createBox({ top: 100, left: 100})
+  public addBox(name = 'box 1') {
+    const box = this.createBox({ top: 100, left: 100, name})
     this.canvas.add(box)
     this.canvas.renderAll()
 
@@ -52,8 +53,17 @@ export class AppComponent implements OnInit {
     })
   }
 
+  public search() {
+    console.log(this.canvas.getItemsByName('box 1'))
+  }
+
+  public loadCanvas() {
+    this.canvas.loadFromJSON(this.oldCanvas, this.canvas.renderAll.bind(this.canvas))
+  }
+
   public save() {
     console.log(this.canvas.toJSON())
+    this.oldCanvas = JSON.stringify(this.canvas)
   }
 
   public removeElement() {
@@ -65,10 +75,11 @@ export class AppComponent implements OnInit {
     width = 100, 
     top = 0,
     left = 0,
+    name = '',
     fill = RECT_FILL_COLOR, 
-    stroke = RECT_STROKE_COLOR, 
+    stroke = RECT_STROKE_COLOR,
     strokeWidth = RECT_STROKE_WIDTH}): any {
-    return new fabric.Rect({
+    return new fabric.Box({
       height,
       width,
       top,
@@ -77,6 +88,8 @@ export class AppComponent implements OnInit {
       stroke,
       strokeWidth,
       strokeUniform: true,
+    }, {
+      name
     })
   }
 }
